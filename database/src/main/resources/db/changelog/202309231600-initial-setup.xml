@@ -1,0 +1,137 @@
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet author="Rutvik" id="202309231600">
+        <createTable tableName="user_auth">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="user_id" type="VARCHAR">
+                <constraints nullable="false"/>
+            </column>
+            <column name="auth_token" type="VARCHAR" />
+            <column name="otp" type="INTEGER" />
+            <column name="status" type="VARCHAR" />
+            <column name="expires_at" type="TIMESTAMP"/>
+            <column name="created_at" type="TIMESTAMP"/>
+            <column name="updated_at" type="TIMESTAMP"/>
+            <column name="version" type="BIGINT" defaultValue="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="Rutvik" id="202309231601" runInTransaction="false">
+        <sql dbms="postgresql">
+            CREATE INDEX CONCURRENTLY
+            IF NOT EXISTS index_expires_at
+            ON user_auth(expires_at)
+        </sql>
+
+        <sql dbms="postgresql">
+            CREATE INDEX CONCURRENTLY
+            IF NOT EXISTS index_auth_token
+            ON user_auth(auth_token)
+        </sql>
+
+        <sql dbms="postgresql">
+            CREATE INDEX CONCURRENTLY
+            IF NOT EXISTS index_user_auth_user_id
+            ON user_auth(user_id)
+        </sql>
+
+    </changeSet>
+
+    <changeSet author="Rutvik" id="202309231602">
+        <createTable tableName="users">
+            <column name="id" type="VARCHAR">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="phone_number" type="VARCHAR">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP"/>
+            <column name="updated_at" type="TIMESTAMP"/>
+            <column name="version" type="BIGINT" defaultValue="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="Rutvik" id="202309231603" runInTransaction="false">
+        <sql dbms="postgresql">
+            CREATE INDEX CONCURRENTLY
+            IF NOT EXISTS index_user_id
+            ON users(id)
+        </sql>
+
+        <sql dbms="postgresql">
+            CREATE INDEX CONCURRENTLY
+            IF NOT EXISTS index_user_phone_number
+            ON users(phone_number)
+        </sql>
+    </changeSet>
+
+    <changeSet author="Rutvik" id="202309231604">
+        <createTable tableName="loans">
+            <column name="id" type="VARCHAR">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="user_id" type="VARCHAR">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR" />
+            <column name="loan_term" type="INTEGER" />
+            <column name="amount" type="NUMERIC(10, 2)" />
+            <column name="amount_repaid" type="NUMERIC(10, 2)" />
+            <column name="next_loan_repayment_id" type="VARCHAR" />
+            <column name="frequency" type="VARCHAR" />
+
+            <column name="created_at" type="TIMESTAMP"/>
+            <column name="updated_at" type="TIMESTAMP"/>
+            <column name="version" type="BIGINT" defaultValue="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="Rutvik" id="202309231605" runInTransaction="false">
+        <sql dbms="postgresql">
+            CREATE INDEX CONCURRENTLY
+            IF NOT EXISTS index_loans_user_id
+            ON loans(user_id)
+        </sql>
+    </changeSet>
+
+    <changeSet author="Rutvik" id="202309231606">
+        <createTable tableName="loan_repayments">
+            <column name="id" type="VARCHAR">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="loan_id" type="VARCHAR">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR" />
+            <column name="repayment_number" type="INTEGER" />
+            <column name="amount_repaid" type="NUMERIC(10, 2)" />
+            <column name="installment_amount" type="NUMERIC(10, 2)" />
+            <column name="payment_reference_ids" type="VARCHAR" />
+            <column name="repayment_time" type="TIMESTAMP"/>
+            <column name="created_at" type="TIMESTAMP"/>
+            <column name="updated_at" type="TIMESTAMP"/>
+            <column name="version" type="BIGINT" defaultValue="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="Rutvik" id="202309231607" runInTransaction="false">
+        <sql dbms="postgresql">
+            CREATE INDEX CONCURRENTLY
+            IF NOT EXISTS index_loan_repayments_loan_id
+            ON loan_repayments(loan_id)
+        </sql>
+    </changeSet>
+
+
+    <changeSet author="Rutvik" id="202309231608">
+        <addColumn tableName="loan_repayments">
+            <column name="scheduled_at" type="TIMESTAMP" />
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>
