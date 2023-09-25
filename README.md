@@ -1,6 +1,7 @@
 # Mini Aspire Service
 
 ## About
+Backend service built using java springboot and postgres as the database.
 
 ### Auth
 In order to do auth, there are two tables- users and user_auth.
